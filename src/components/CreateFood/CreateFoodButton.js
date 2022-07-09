@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { Button, Stack, Typography } from "@mui/material";
 import useInput from "../../hooks/use-input";
-import { Modal, TextInput, Textarea,Box } from "@mantine/core";
+import { Modal, TextInput, Textarea, Box } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
 import { auth, db, storage } from "../../firebase";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
@@ -22,15 +22,6 @@ export default function CreateFoodButton() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const [data, setData] = useState({
-    title: "",
-    location: "",
-    type: "",
-    quantity: "",
-    expiration: "",
-    storage_details: "",
-  });
 
   const {
     value: enteredTitle,
@@ -70,14 +61,6 @@ export default function CreateFoodButton() {
     if (!formIsValid) {
       return;
     }
-    setData({
-      title: enteredTitle,
-      location: enteredLocation,
-      type: enteredType,
-      quantity: enteredQuantity,
-      expiration: enteredExpiration,
-      storage_details: enteredDetails,
-    });
 
     let url;
     if (img) {
@@ -90,22 +73,27 @@ export default function CreateFoodButton() {
       url = dlUrl;
     }
 
-    await addDoc(collection(db, "donators", loggedInUser, "foodItems"), {
-      title: data.title,
-      location: data.location,
-      type: data.type,
-      image: url || "",
-      quantity: data.quantity,
-      expiration: data.expiration,
-      storage_details: data.storage_details,
-    });
-
+    try {
+      await addDoc(collection(db, "donators", loggedInUser, "foodItems"), {
+        title: enteredTitle,
+        location: enteredLocation,
+        type: enteredType,
+        image: url || "",
+        quantity: enteredQuantity,
+        expiration: enteredExpiration,
+        storage_details: enteredDetails,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    url="";
     titleReset();
     locationReset();
     typeReset();
     setEnteredExpiration(new Date());
     setEnteredDetails("");
     setEnteredQuantity("");
+    setOpen(false);
   };
 
   return (
@@ -187,12 +175,11 @@ export default function CreateFoodButton() {
             <Typography className="text-xs text-gray-400">
               {img ? img.name : null}
             </Typography>
-            <Box display="flex" flexDirection="column" >
+            <Box display="flex" flexDirection="column">
               <Button
                 variant="contained"
                 type="submit"
                 disabled={!formIsValid}
-                onClick={handleClose}
                 autoFocus
               >
                 Submit
