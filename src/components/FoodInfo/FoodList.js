@@ -12,42 +12,17 @@ const Img = styled('img')({
     maxHeight: '100%',
   });  
 
-const foodData = [{
-    'donator': 'GcDneIt3d1TAIxk960pPKvYx3PV2',
-    'title':'Nasi Goreng',
-    'location': 'Pasir Ris',
-    'type': 'Halal',
-    'image': 'something.jpg',
-    'quantity': '1kg',
-    'expiration': '030622',
-    'storage_details': 'Fridge'
-},
-{
-    'donator': 'GcDneIt3d1TAIxk960pPKvYx3PV2',
-    'title':'Nasi Goreng',
-    'location': 'Pasir Ris',
-    'type': 'Halal',
-    'image': 'something.jpg',
-    'quantity': '1kg',
-    'expiration': '030622',
-    'storage_details': 'Fridge'
-},
-{
-    'donator': 'GcDneIt3d1TAIxk960pPKvYx3PV2',
-    'title':'Nasi Goreng',
-    'location': 'Pasir Ris',
-    'type': 'Halal',
-    'image': 'something.jpg',
-    'quantity': '1kg',
-    'expiration': '030622',
-    'storage_details': 'Fridge'
-},
-]
-
 class FoodList extends Component{
 
-    renderItems(){
-        return foodData.map((item) => (
+    constructor(props){
+        super(props)
+        this.state = {
+            foodData: props.foodData,
+        }
+    }
+
+    renderItems(food){
+        return food.map((item) => (
             <Paper
             sx={{
                 p: 2,
@@ -120,7 +95,7 @@ class FoodList extends Component{
                         <span className="text-2xl text-green-600 font-bold">FoodHero Packages</span>
                     </Typography>
                 </Grid>
-                <this.renderItems/>
+                {this.renderItems(this.state.foodData)}
             </Paper>
         );
     }
