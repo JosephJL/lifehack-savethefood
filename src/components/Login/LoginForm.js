@@ -15,10 +15,6 @@ const LoginForm = () => {
     enteredPassword: "",
   });
 
-  const handleSubmit = () => {
-    navigate("/home");
-  };
-
   const handleClick = () => {
     navigate("/register");
   };
@@ -79,6 +75,7 @@ const LoginForm = () => {
     }
     passwordReset();
     emailReset();
+    navigate("/home");
   };
 
   return (
@@ -112,7 +109,7 @@ const LoginForm = () => {
             size="small"
             variant="contained"
             disabled={!formIsValid}
-            onClick={handleSubmit}
+            
           >
             Login
           </Button>
