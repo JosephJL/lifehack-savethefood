@@ -78,7 +78,7 @@ const RegisterForm = () => {
   }
   const formSubmitHandler = async (event) => {
     event.preventDefault();
-    if (!nameIsValid && !emailIsValid && !passwordIsValid && !enteredRole) {
+    if (!formIsValid) {
       return;
     }
     setData({
