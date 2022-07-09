@@ -1,60 +1,33 @@
-import React , {useState, useEffect} from 'react'
+import React , {useState, useEffect , useCallback} from 'react'
 import { Grid, Typography } from "@material-ui/core";
 import { FoodList } from '../components/FoodInfo/FoodList';
 
 import { auth, db, storage } from "../firebase";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { collection, query, where, onSnapshot, getDocs } from "firebase/firestore";
-
-const food = [{
-    'donator': 'GcDneIt3d1TAIxk960pPKvYx3PV2',
-    'title':'Nasi Goreng',
-    'location': 'Pasir Ris',
-    'type': 'Halal',
-    'image': 'something.jpg',
-    'quantity': '1kg',
-    'expiration': '030622',
-    'storage_details': 'Fridge'
-},
-{
-    'donator': 'GcDneIt3d1TAIxk960pPKvYx3PV2',
-    'title':'Nasi Goreng',
-    'location': 'Pasir Ris',
-    'type': 'Halal',
-    'image': 'something.jpg',
-    'quantity': '1kg',
-    'expiration': '030622',
-    'storage_details': 'Fridge'
-},
-{
-    'donator': 'GcDneIt3d1TAIxk960pPKvYx3PV2',
-    'title':'Nasi Goreng',
-    'location': 'Pasir Ris',
-    'type': 'Halal',
-    'image': 'something.jpg',
-    'quantity': '1kg',
-    'expiration': '030622',
-    'storage_details': 'Fridge'
-},
-]
+import { collection, query, where, Query, getDocs } from "firebase/firestore";
 
 const Home = () => {
 
     const [loading, setLoading] = useState(true);
     const [foodPosts, setfoodPosts] = useState([]);
 
-    const [users, setUsers] = useState([]);
-    useEffect(() => {
-        const q = query(collection(db,"donators")); 
-        const unsub = onSnapshot(q, (querySnapshot) => { 
-        let users = []; 
-        querySnapshot.forEach((doc) => { 
-            users.push(doc.data()); 
-        }); 
-        setUsers(users); 
-        }); 
-        console.log(users)
-        return () => unsub(); 
+    const getUsers = useCallback(async()=>{
+        const data = await fetch(collection(db,"donators"));
+        console.log(data);
+        return data
+    })
+
+    useEffect(() => { 
+        async function getFoodItemByUserId() {
+            const users = await getUsers();
+            users.forEach(snapshot => {
+                const foodItems = snapshot.ref.collection("foodItems").get();
+                console.log(foodItems.docs.map(doc => doc.data()))
+            });
+            setfoodPosts(foodItems);
+            console.log(foodPosts);
+        }
+        return () => fetchData();
     }, []);
    
 
