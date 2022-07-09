@@ -32,7 +32,7 @@ export default function SuccessDialog() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose()} autoFocus>
+          <Button onClick={handleClose} autoFocus>
             Return to Login
           </Button>
         </DialogActions>
