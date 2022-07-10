@@ -37,7 +37,8 @@ const Listings = () => {
       setListings(listings);
     });
   }, [loggedInUser]);
-  console.log(listings);
+
+  
   if (!listings || listings.length === 0) {
     return (
       <Stack spacing={14}>

@@ -11,8 +11,6 @@ import {
   addDoc,
   getDoc,
   doc,
-  where,
-  query,
 } from "firebase/firestore";
 
 export default function CreateFoodButton() {
@@ -111,6 +109,7 @@ export default function CreateFoodButton() {
         expiration: enteredExpiration,
         storage_details: enteredDetails,
         username: username,
+        isPickedUp: false
       });
     } catch (err) {
       console.log(err);
