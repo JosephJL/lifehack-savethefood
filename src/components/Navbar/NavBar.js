@@ -51,7 +51,9 @@ export default function NavBar() {
       <AppBar position="fixed" color="inherit">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            FoodHeroes
+              <span className="text-2xl text-green-600 font-bold">
+                FoodHeroes
+              </span>
           </Typography>
           {auth && (
             <div>
