@@ -6,7 +6,14 @@ import { Modal, TextInput, Textarea, Box } from "@mantine/core";
 import { DatePicker } from "@mantine/dates";
 import { auth, db, storage } from "../../firebase";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDoc,
+  doc,
+  where,
+  query,
+} from "firebase/firestore";
 
 export default function CreateFoodButton() {
   const loggedInUser = auth.currentUser.uid;
@@ -22,6 +29,17 @@ export default function CreateFoodButton() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  let username ="";
+
+  getDoc(doc(db, "users", loggedInUser)).then((docSnap) => {
+    if (docSnap.exists()) {
+      username = docSnap.data().enteredName;
+    } else {
+      console.log("No such document!");
+    }
+  });
+
 
   const {
     value: enteredTitle,
@@ -83,10 +101,21 @@ export default function CreateFoodButton() {
         expiration: enteredExpiration,
         storage_details: enteredDetails,
       });
+
+      await addDoc(collection(db, "foodListings"), {
+        title: enteredTitle,
+        location: enteredLocation,
+        type: enteredType,
+        image: url || "",
+        quantity: enteredQuantity,
+        expiration: enteredExpiration,
+        storage_details: enteredDetails,
+        username: username,
+      });
     } catch (err) {
       console.log(err);
     }
-    url="";
+    url = "";
     titleReset();
     locationReset();
     typeReset();
