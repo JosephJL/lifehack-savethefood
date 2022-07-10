@@ -11,10 +11,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { auth, db } from "../../firebase";
 import { signOut } from "firebase/auth";
-import { updateDoc, doc } from "firebase/firestore";
+import { updateDoc, doc, getDoc } from "firebase/firestore";
 
 export default function NavBar() {
   const [anchorEl, setAnchorEl] = useState(null);
+  const [userType, setUserType] = useState("");
+  const loggedInUser = auth.currentUser.uid;
   const navigate = useNavigate();
   const handleLogout = async () => {
     await updateDoc(doc(db, "users", auth.currentUser.uid), {
@@ -23,6 +25,15 @@ export default function NavBar() {
     await signOut(auth);
     navigate("/login");
   };
+
+  getDoc(doc(db, "users", loggedInUser)).then((docSnap) => {
+    if (docSnap.exists()) {
+      setUserType(docSnap.data().enteredRole);
+    } else {
+      console.log("No such document!");
+    }
+  });
+
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -69,7 +80,9 @@ export default function NavBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleListings}>Listings</MenuItem>
+                {userType === "donator" ? (
+                  <MenuItem onClick={handleListings}>Listings</MenuItem>
+                ) : null}
 
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
