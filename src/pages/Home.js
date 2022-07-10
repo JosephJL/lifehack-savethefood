@@ -11,7 +11,7 @@ const Home = () => {
       <NavBar />
       <Grid
         container
-        spacing={0}
+        spacing={4}
         direction="column"
         alignItems="center"
   
