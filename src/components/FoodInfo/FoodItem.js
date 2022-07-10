@@ -14,7 +14,7 @@ import {
 
 import { updateDoc, doc, getDoc } from "firebase/firestore";
 
-import { db } from "../../firebase";
+import { auth, db } from "../../firebase";
 
 const Img = styled("img")({
   margin: "auto",
@@ -24,7 +24,9 @@ const Img = styled("img")({
 });
 
 const FoodItem = ({ item }) => {
+  const loggedInUser = auth.currentUser.uid;
   const [open, setOpen] = useState(false);
+  const [userType, setUserType] = useState("");
   const [isPickedUp, setIsPickedUp] = useState(false);
 
   const handleClickOpen = () => {
@@ -33,6 +35,14 @@ const FoodItem = ({ item }) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  getDoc(doc(db, "users", loggedInUser)).then((docSnap) => {
+    if (docSnap.exists()) {
+      setUserType(docSnap.data().enteredRole);
+    } else {
+      console.log("No such document!");
+    }
+  });
 
   const selectFoodItem = async (id) => {
     await updateDoc(doc(db, "foodListings", id), {
@@ -90,20 +100,23 @@ const FoodItem = ({ item }) => {
               Donator: {item.username}
             </Typography>
           </Grid>
+
           <Grid item>
-            {!isPickedUp ? (
-              <Button
-                variant="contained"
-                size="small"
-                onClick={handleClickOpen}
-              >
-                Pick Up
-              </Button>
-            ) : (
-              <Typography className="text-red-500">
-                Has Been Picked Up
-              </Typography>
-            )}
+            {userType !== "donator" ? (
+              !isPickedUp ? (
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={handleClickOpen}
+                >
+                  Pick Up
+                </Button>
+              ) : (
+                <Typography className="text-red-500">
+                  Has Been Picked Up
+                </Typography>
+              )
+            ) : null}
 
             <Dialog
               open={open}
